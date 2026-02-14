@@ -10,6 +10,7 @@ class MovieViewModel extends StateNotifier<MovieUiState> {
   final RefreshMoviesUseCase refreshMoviesUseCase;
   final UpdateFavoriteStatusUseCase toggleFavoriteUseCase;
 
+  // Private full list, never exposed to UI
   List<Movie> _allMovies = [];
 
   MovieViewModel(
@@ -60,7 +61,10 @@ class MovieViewModel extends StateNotifier<MovieUiState> {
       state.selectedGenre,
       state.selectedRating,
     );
-    state = state.copyWith(movies: filteredMovies);
+    state = state.copyWith(
+      movies: filteredMovies,
+      allMovies: List<Movie>.from(_allMovies), // Always keep allMovies in sync
+    );
   }
 
   List<Movie> _applyFilters(
@@ -69,19 +73,22 @@ class MovieViewModel extends StateNotifier<MovieUiState> {
     String genre,
     String rating,
   ) {
+    final genreFilter = genre.trim().toLowerCase();
+    final queryFilter = query.trim().toLowerCase();
+    final ratingFilter = rating.trim().toLowerCase();
     return movies.where((movie) {
-      final matchesGenre = genre == 'All' || movie.genre.toLowerCase() == genre.toLowerCase();
-      final matchesSearchTerm = movie.title.toLowerCase().contains(query.toLowerCase());
+      final movieGenre = movie.genre.trim().toLowerCase();
+      final matchesGenre = genreFilter == 'all' || movieGenre == genreFilter;
+      final matchesSearchTerm = movie.title.toLowerCase().contains(queryFilter);
       final ratingValue = double.tryParse(movie.rating) ?? 0.0;
-      final matchesRating = switch (rating) {
-        'All' => true,
-        'Good' => ratingValue >= 8.0,
-        'Ok' => ratingValue >= 5.0 && ratingValue < 8.0,
-        'Bad' => ratingValue < 5.0,
+      final matchesRating = switch (ratingFilter) {
+        'all' => true,
+        'good' => ratingValue >= 8.0,
+        'ok' => ratingValue >= 5.0 && ratingValue < 8.0,
+        'bad' => ratingValue < 5.0,
         _ => false,
       };
       return matchesGenre && matchesSearchTerm && matchesRating;
     }).toList();
   }
 }
-

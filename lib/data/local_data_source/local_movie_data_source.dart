@@ -10,8 +10,8 @@ class LocalMovieDataSource {
     final List<dynamic> jsonList = json.decode(jsonString);
     return jsonList.map((json) {
       final movie = Movie.fromJson(json);
-      // Extract the number from a filename like 'movie_1.jpg'
-      final match = RegExp(r'movie_(\d+)').firstMatch(movie.image);
+      // Extract the number from a filename like '1.jpg'
+      final match = RegExp(r'^(\d+)').firstMatch(movie.image);
       final imageResId = match != null ? int.parse(match.group(1)!) : 0;
       return Movie(
         id: movie.id,
