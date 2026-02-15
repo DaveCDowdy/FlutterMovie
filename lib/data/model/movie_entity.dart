@@ -1,4 +1,5 @@
 import 'package:floor/floor.dart';
+import 'package:flutter_movie/domain/entities/movie.dart';
 
 @Entity(tableName: 'movies')
 class MovieEntity {
@@ -23,4 +24,26 @@ class MovieEntity {
     required this.imageResId,
     this.isFavorite = false,
   });
+}
+
+extension MovieEntityMapper on MovieEntity {
+  Movie toDomain() => Movie(
+        id: id,
+        title: title,
+        genre: genre,
+        rating: rating,
+        imageResId: imageResId,
+        isFavorite: isFavorite,
+      );
+}
+
+extension MovieDomainMapper on Movie {
+  MovieEntity toEntity() => MovieEntity(
+        id: id,
+        title: title,
+        genre: genre,
+        rating: rating,
+        imageResId: imageResId,
+        isFavorite: isFavorite,
+      );
 }

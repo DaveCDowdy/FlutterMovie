@@ -3,6 +3,8 @@ import 'package:flutter_movie/data/local_data_source/local_movie_data_source.dar
 import 'package:flutter_movie/data/model/movie.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late LocalMovieDataSource dataSource;
 
   setUp(() {
