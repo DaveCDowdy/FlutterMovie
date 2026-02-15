@@ -19,8 +19,7 @@ class FavoritesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final uiState = ref.watch(movieViewModelProvider);
     // Show all favorites regardless of filter
-    final allMovies = uiState.allMovies.isNotEmpty ? uiState.allMovies : uiState.movies;
-    final favoriteMovies = allMovies.where((m) => m.isFavorite).toList();
+    final favoriteMovies = uiState.movies.where((m) => m.isFavorite).toList();
 
     return Scaffold(
       bottomNavigationBar: BottomBar(
@@ -32,9 +31,9 @@ class FavoritesScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             const AppLogo(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Text(
               'Favorite Movies',
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(
@@ -54,43 +53,38 @@ class FavoritesScreen extends ConsumerWidget {
                   ),
                 ),
               )
-            else
-              Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Scrollbar(
-                          thumbVisibility: true,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                            itemCount: favoriteMovies.length,
-                            separatorBuilder: (_, __) => const SizedBox(width: 24),
-                            itemBuilder: (context, index) {
-                              final movie = favoriteMovies[index];
-                              return FavoriteMovieItem(
-                                movie: movie,
-                                onRemoveFavorite: (movie) => ref.read(movieViewModelProvider.notifier).toggleFavorite(movie),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+            else ...[
+              Flexible(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: favoriteMovies.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 16),
+                      itemBuilder: (context, index) {
+                        final movie = favoriteMovies[index];
+                        return FavoriteMovieItem(
+                          movie: movie,
+                          onRemoveFavorite: (movie) => ref.read(movieViewModelProvider.notifier).toggleFavorite(movie),
+                        );
+                      },
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.swipe, color: Colors.white54, size: 18),
-                        SizedBox(width: 6),
-                        Text('Swipe to see more', style: TextStyle(color: Colors.white54, fontSize: 13)),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
+              const SizedBox(height: 8),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.swipe, color: Colors.white54, size: 18),
+                  SizedBox(width: 6),
+                  Text('Swipe to see more', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                ],
+              ),
+            ],
           ],
         ),
       ),

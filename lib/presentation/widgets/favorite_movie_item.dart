@@ -63,7 +63,7 @@ class FavoriteMovieItem extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 8),
           Column(
             children: [
               IconButton(
